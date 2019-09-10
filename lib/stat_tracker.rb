@@ -14,6 +14,7 @@ class StatTracker
   include LeagueStats
   include TeamStats
   include HelperMethods
+  include ERB::Util
 
   attr_reader :teams, :games, :game_teams
 

@@ -191,6 +191,14 @@ class StatTrackerTest < Minitest::Test
     assert_equal "Vancouver Whitecaps FC", @stat_tracker.rival("52")
   end
 
+  def test_biggest_team_blowout
+assert_equal 1, @stat_tracker.biggest_team_blowout("3")
+  end
+
+  def test_worst_loss
+    assert_equal 1, @stat_tracker.worst_loss("3")
+  end
+
   def test_head_to_head
     expected = {
       "Houston Dynamo" => 1.0,
@@ -246,9 +254,19 @@ class StatTrackerTest < Minitest::Test
     assert_equal false, @stat_tracker.home_win?("4", @stat_tracker.games["2015020797"])
   end
 
+  def test_home_loss?
+    assert_equal false, @stat_tracker.home_loss?("4", @stat_tracker.games["2016020070"])
+    assert_equal true, @stat_tracker.home_loss?("4", @stat_tracker.games["2015020797"])
+  end
+
   def test_away_win?
     assert_equal true, @stat_tracker.away_win?("21", @stat_tracker.games["2015020314"])
     assert_equal false, @stat_tracker.away_win?("13", @stat_tracker.games["2013020333"])
+  end
+
+  def test_away_loss?
+    assert_equal false, @stat_tracker.away_loss?("21", @stat_tracker.games["2015020314"])
+    assert_equal true, @stat_tracker.away_loss?("13", @stat_tracker.games["2013020333"])
   end
 
   def test_team_result_count

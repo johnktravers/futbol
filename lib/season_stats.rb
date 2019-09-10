@@ -20,8 +20,20 @@ module SeasonStats
       # require 'pry'; binding.pry
   end
 
-  def biggest_surprise
-    #
+  def biggest_surprise(season_id)
+    season_count = season_counts(season_id)
+    surprise_team = ""
+    biggest_percent = 0
+
+    season_count.each do |team_id, counts|
+      reg_percent = counts[:reg_wins] / counts[:reg_games].to_f
+      post_percent = counts[:post_wins] / counts[:post_games].to_f
+      if (post_percent - reg_percent) > biggest_percent
+        surprise_team = @teams[team_id].team_name
+        biggest_percent = post_percent - reg_percent
+      end
+    end
+    surprise_team
   end
 
   def winningest_coach(season)

@@ -6,6 +6,7 @@ require_relative './helper_methods'
 require_relative './game_stats'
 require_relative './league_stats'
 require_relative './team_stats'
+require_relative './season_stats'
 require 'csv'
 require 'pry'
 
@@ -14,6 +15,7 @@ class StatTracker
   include LeagueStats
   include TeamStats
   include HelperMethods
+  include SeasonStats
 
   attr_reader :teams, :games, :game_teams
 

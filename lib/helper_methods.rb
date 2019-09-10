@@ -106,4 +106,16 @@ module HelperMethods
     season_stats
   end
 
+  def coach_win_count
+    coach_wins = Hash.new { |h1, k1| h1[k1] = Hash.new { |h2, k2| h2[k2] = Hash.new(0) } }
+    @game_teams.each do |game_id, game_teams|
+      game_teams.each do |game_team|
+        season = @games[game_id].season
+        coach_wins[season][game_team.head_coach][:games] += 1
+        coach_wins[season][game_team.head_coach][:wins] += 1 if game_team.result == "WIN"
+      end
+    end
+    coach_wins
+  end
+
 end

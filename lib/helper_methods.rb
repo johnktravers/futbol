@@ -118,4 +118,16 @@ module HelperMethods
     coach_wins
   end
 
+  def team_tack_shots
+    tack_shots = Hash.new { |h1, k1| h1[k1] = Hash.new { |h2, k2| h2[k2] = Hash.new(0) } }
+    @game_teams.each do |game_id, game_teams|
+      game_teams.each do |game_team|
+        season = @games[game_id].season
+        tack_shots[season][game_team.team_id][:tackles] += game_team.tackles
+        tack_shots[season][game_team.team_id][:shots] += game_team.shots
+        tack_shots[season][game_team.team_id][:goals] += game_team.goals
+      end
+    end
+    tack_shots
+  end
 end

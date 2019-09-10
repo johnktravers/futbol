@@ -25,5 +25,17 @@ module SeasonStats
     @teams[min_team_id].team_name
   end
 
+  def most_tackles(season)
+    max_tackles = @team_tack_shots[season].max_by do |team_id, counts|
+      counts[:tackles]
+    end[0]
+    @teams[max_tackles].team_name
+  end
 
+  def fewest_tackles(season)
+    min_tackles = @team_tack_shots[season].min_by do |team_id, counts|
+      counts[:tackles]
+    end[0]
+    @teams[min_tackles].team_name
+  end
 end

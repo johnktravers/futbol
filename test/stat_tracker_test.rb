@@ -244,6 +244,15 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
   def test_least_accurate_team
     assert_equal "San Jose Earthquakes", @stat_tracker.least_accurate_team("20132014")
   end
+
+  def test_most_tackles
+    assert_equal "Philadelphia Union", @stat_tracker.most_tackles("20132014")
+  end
+
+  def test_fewest_tackles
+    assert_equal "Seattle Sounders FC", @stat_tracker.fewest_tackles("20132014")
+  end
+  
 ##### Helper Method Tests #####
 
   def test_home_team?

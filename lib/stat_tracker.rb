@@ -25,6 +25,8 @@ class StatTracker
     @game_teams = game_teams
     @seasons = count_of_games_by_season.keys
     @team_result_count = team_result_count
+    @coach_win_count = coach_win_count
+    @team_tack_shots = team_tack_shots
   end
 
   def self.from_csv(locations)

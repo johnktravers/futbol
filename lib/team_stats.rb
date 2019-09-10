@@ -85,6 +85,28 @@ module TeamStats
     @teams[opponent_id].team_name
   end
 
+  def biggest_team_blowout(team_id)
+    greatest_difference = 0
+    @games.each do |game_id, game|
+      if home_win?(team_id, game) || away_win?(team_id, game)
+        difference = (game.home_goals - game.away_goals).abs
+        greatest_difference = difference if difference > greatest_difference
+      end
+    end
+    greatest_difference
+  end
+
+  def worst_loss(team_id)
+    greatest_difference = 0
+    @games.each do |game_id, game|
+      if home_loss?(team_id, game) || away_loss?(team_id, game)
+        difference = (game.home_goals - game.away_goals).abs
+        greatest_difference = difference if difference > greatest_difference
+      end
+    end
+    greatest_difference
+  end
+
   def head_to_head(team_id)
     record = Hash.new
     opponent_stats = opponent_stats(team_id)

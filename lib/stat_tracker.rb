@@ -2,7 +2,6 @@ require_relative './team'
 require_relative './game'
 require_relative './game_team'
 require_relative './modules/helper_methods'
-#thought you called modules directly, ask on monday
 require_relative './modules/game_stats'
 require_relative './modules/league_stats'
 require_relative './modules/team_stats'

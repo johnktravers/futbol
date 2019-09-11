@@ -235,11 +235,11 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
 ##### Season Statistics Tests #####
 
   def test_biggest_bust
-    assert_equal [], @stat_tracker.biggest_bust("20122013")
+    assert_equal "Seattle Sounders FC", @stat_tracker.biggest_bust("20122013")
   end
 
   # def test_biggest_surprise
-  #   assert_equal [], @stat_tracker.biggest_surprise("20122013")
+  #   assert_equal [], @stat_tracker.biggest_surprise("20142015")
   # end
 
   def test_winningest_coach
@@ -248,6 +248,22 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
 
   def test_worst_coach
     assert_equal "Claude Julien", @stat_tracker.worst_coach("20142015")
+  end
+
+  def test_most_accurate_team
+    assert_equal "Atlanta United", @stat_tracker.most_accurate_team("20142015")
+  end
+
+  def test_least_accurate_team
+    assert_equal "San Jose Earthquakes", @stat_tracker.least_accurate_team("20132014")
+  end
+
+  def test_most_tackles
+    assert_equal "Philadelphia Union", @stat_tracker.most_tackles("20132014")
+  end
+
+  def test_fewest_tackles
+    assert_equal "Seattle Sounders FC", @stat_tracker.fewest_tackles("20132014")
   end
 
 ##### Helper Method Tests #####
@@ -401,25 +417,64 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
     assert_equal expected, @stat_tracker.coach_win_count
   end
 
-  # def test_season_games
-  #   assert_equal [], @stat_tracker.season_games("20122013")
-  # end
 
-  def test_season_counts
+  def test_team_tackles_and_shots
     expected = {
-      "6"=>{:post_games=>3, :post_wins=>3},
-      "3"=>{:post_games=>2},
-      "2"=>{:reg_games=>1, :reg_wins=>1},
-      "13"=>{:reg_games=>1},
-      "28"=>{:reg_games=>1, :reg_wins=>1},
-      "19"=>{:reg_games=>1},
-      "10"=>{:post_games=>1},
-      "27"=>{:reg_games=>1},
-      "29"=>{:reg_games=>1},
-      "20"=>{:reg_games=>1, :reg_wins=>1},
-      "24"=>{:reg_games=>1}
+      "20122013"=>{
+        "3"=>{:tackles=>77, :shots=>17, :goals=>4},
+        "6"=>{:tackles=>117, :shots=>30, :goals=>8},
+        "13"=>{:tackles=>22, :shots=>7, :goals=>2},
+        "2"=>{:tackles=>15, :shots=>7, :goals=>3},
+        "19"=>{:tackles=>22, :shots=>8, :goals=>2},
+        "28"=>{:tackles=>30, :shots=>6, :goals=>3},
+        "10"=>{:tackles=>37, :shots=>5, :goals=>1},
+        "29"=>{:tackles=>36, :shots=>5, :goals=>3},
+        "27"=>{:tackles=>35, :shots=>8, :goals=>3},
+        "24"=>{:tackles=>17, :shots=>6, :goals=>3},
+        "20"=>{:tackles=>17, :shots=>6, :goals=>2}},
+      "20132014"=>{
+        "16"=>{:tackles=>45, :shots=>17, :goals=>6},
+        "19"=>{:tackles=>68, :shots=>20, :goals=>4},
+        "27"=>{:tackles=>34, :shots=>8, :goals=>1},
+        "2"=>{:tackles=>15, :shots=>7, :goals=>4},
+        "22"=>{:tackles=>62, :shots=>14, :goals=>4},
+        "13"=>{:tackles=>58, :shots=>11, :goals=>4},
+        "4"=>{:tackles=>37, :shots=>3, :goals=>1},
+        "3"=>{:tackles=>32, :shots=>9, :goals=>2},
+        "6"=>{:tackles=>20, :shots=>7, :goals=>2},
+        "1"=>{:tackles=>22, :shots=>6, :goals=>2}},
+      "20142015"=>{
+        "30"=>{:tackles=>64, :shots=>12, :goals=>4},
+        "19"=>{:tackles=>62, :shots=>10, :goals=>2},
+        "6"=>{:tackles=>27, :shots=>6, :goals=>2},
+        "21"=>{:tackles=>26, :shots=>9, :goals=>2},
+        "1"=>{:tackles=>25, :shots=>4, :goals=>2},
+        "29"=>{:tackles=>29, :shots=>8, :goals=>0},
+        "10"=>{:tackles=>34, :shots=>7, :goals=>0},
+        "16"=>{:tackles=>22, :shots=>8, :goals=>2}},
+      "20152016"=>{
+        "4"=>{:tackles=>114, :shots=>25, :goals=>3},
+        "15"=>{:tackles=>64, :shots=>11, :goals=>6},
+        "21"=>{:tackles=>17, :shots=>7, :goals=>2},
+        "52"=>{:tackles=>43, :shots=>10, :goals=>2},
+        "12"=>{:tackles=>16, :shots=>7, :goals=>2},
+        "24"=>{:tackles=>26, :shots=>6, :goals=>2}},
+      "20162017"=>{
+        "20"=>{:tackles=>67, :shots=>17, :goals=>4},
+        "24"=>{:tackles=>68, :shots=>17, :goals=>6},
+        "13"=>{:tackles=>16, :shots=>7, :goals=>1},
+        "30"=>{:tackles=>13, :shots=>5, :goals=>3},
+        "28"=>{:tackles=>23, :shots=>10, :goals=>2},
+        "10"=>{:tackles=>20, :shots=>7, :goals=>2},
+        "29"=>{:tackles=>24, :shots=>5, :goals=>2},
+        "2"=>{:tackles=>23, :shots=>7, :goals=>2},
+        "12"=>{:tackles=>19, :shots=>7, :goals=>3},
+        "4"=>{:tackles=>13, :shots=>6, :goals=>4}},
+      "20172018"=>{
+        "2"=>{:tackles=>10, :shots=>8, :goals=>2},
+        "30"=>{:tackles=>11, :shots=>8, :goals=>4}
       }
-    assert_equal expected, @stat_tracker.season_counts("20122013")
+    }
+    assert_equal expected, @stat_tracker.team_tack_shots
   end
-
 end

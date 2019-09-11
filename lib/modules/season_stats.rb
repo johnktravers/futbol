@@ -1,37 +1,17 @@
 module SeasonStats
 
   def biggest_bust(season_id)
-    season_count = season_counts(season_id)
-    bust_team = ""
-    bust_percent = 0
-    season_count.each do |team_id, counts|
-      reg_percent = counts[:regular_season][:wins] / counts[:regular_season][:games].to_f
-      post_percent = counts[:postseason][:wins] / counts[:postseason][:games].to_f if counts[:postseason][:games] > 0
-      post_percent = 0 if counts[:postseason][:games] == 0
-
-      if (reg_percent - post_percent) > bust_percent
-        bust_team = @teams[team_id].team_name
-        bust_percent = reg_percent - post_percent
-      end
-    end
-    bust_team
+    bust_team_id = post_and_reg_percents(season_id).max_by do |team_id, percents|
+      percents[:reg_percent] - percents[:post_percent]
+    end[0]
+    @teams[bust_team_id].team_name
   end
 
   def biggest_surprise(season_id)
-    season_count = season_counts(season_id)
-    surprise_team = ""
-    biggest_percent = 0
-    season_count.each do |team_id, counts|
-
-      reg_percent = counts[:regular_season][:wins] / counts[:regular_season][:games].to_f
-      post_percent = counts[:postseason][:wins] / counts[:postseason][:games].to_f
-
-      if (post_percent - reg_percent) > biggest_percent
-        surprise_team = @teams[team_id].team_name
-        biggest_percent = post_percent - reg_percent
-      end
-    end
-    surprise_team
+    surprise_team_id = post_and_reg_percents(season_id).max_by do |team_id, percents|
+      percents[:post_percent] - percents[:reg_percent]
+    end[0]
+    @teams[surprise_team_id].team_name
   end
 
   def winningest_coach(season)

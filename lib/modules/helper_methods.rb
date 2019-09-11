@@ -142,4 +142,17 @@ module HelperMethods
     end
     season_count
   end
+
+  def post_and_reg_percents(season_id)
+    percents = Hash.new { |h,k| h[k] = Hash.new(0)}
+    season_counts(season_id).each do |team_id, counts|
+      reg_percent = counts[:regular_season][:wins] / counts[:regular_season][:games].to_f
+      post_percent = counts[:postseason][:wins] / counts[:postseason][:games].to_f if counts[:postseason][:games] > 0
+      post_percent = 0 if counts[:postseason][:games] == 0
+      reg_percent = 0 if counts[:regular_season][:games] == 0
+      percents[team_id][:reg_percent] = reg_percent
+      percents[team_id][:post_percent] = post_percent
+    end
+    percents
+  end
 end

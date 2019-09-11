@@ -85,6 +85,28 @@ module TeamStats
     @teams[opponent_id].team_name
   end
 
+  def biggest_team_blowout(team_id)
+    greatest_difference = 0
+    @games.each do |game_id, game|
+      if home_win?(team_id, game) || away_win?(team_id, game)
+        difference = (game.home_goals - game.away_goals).abs
+        greatest_difference = difference if difference > greatest_difference
+      end
+    end
+    greatest_difference
+  end
+
+  def worst_loss(team_id)
+    greatest_difference = 0
+    @games.each do |game_id, game|
+      if home_loss?(team_id, game) || away_loss?(team_id, game)
+        difference = (game.home_goals - game.away_goals).abs
+        greatest_difference = difference if difference > greatest_difference
+      end
+    end
+    greatest_difference
+  end
+
   def head_to_head(team_id)
     record = Hash.new
     opponent_stats = opponent_stats(team_id)
@@ -101,33 +123,23 @@ module TeamStats
     team_stats = team_stats_by_season(team_id)
 
     team_stats.each do |season, stats|
-      season_summary[season][:postseason][:total_goals_scored] = stats[:post_goals_scored]
-      season_summary[season][:postseason][:total_goals_against] = stats[:post_goals_against]
+      stats.each do |game_type, counts|
 
-      season_summary[season][:regular_season][:total_goals_scored] = stats[:reg_goals_scored]
-      season_summary[season][:regular_season][:total_goals_against] = stats[:reg_goals_against]
+        season_summary[season][game_type][:total_goals_scored] = counts[:goals_scored]
+        season_summary[season][game_type][:total_goals_against] = counts[:goals_against]
 
-      if stats[:post_games] != 0
-        season_summary[season][:postseason][:win_percentage] = (stats[:post_wins] / stats[:post_games].to_f).round(2)
-        season_summary[season][:postseason][:average_goals_scored] = (stats[:post_goals_scored] / stats[:post_games].to_f).round(2)
-        season_summary[season][:postseason][:average_goals_against] = (stats[:post_goals_against] / stats[:post_games].to_f).round(2)
-      else
-        season_summary[season][:postseason][:win_percentage] = 0
-        season_summary[season][:postseason][:average_goals_scored] = 0
-        season_summary[season][:postseason][:average_goals_against] = 0
-      end
-
-      if stats[:reg_games] != 0
-        season_summary[season][:regular_season][:win_percentage] = (stats[:reg_wins] / stats[:reg_games].to_f).round(2)
-        season_summary[season][:regular_season][:average_goals_scored] = (stats[:reg_goals_scored] / stats[:reg_games].to_f).round(2)
-        season_summary[season][:regular_season][:average_goals_against] = (stats[:reg_goals_against] / stats[:reg_games].to_f).round(2)
-      else
-        season_summary[season][:regular_season][:win_percentage] = 0
-        season_summary[season][:regular_season][:average_goals_scored] = 0
-        season_summary[season][:regular_season][:average_goals_against] = 0
+        if counts[:games] > 0
+          season_summary[season][game_type][:win_percentage] = (counts[:wins] / counts[:games].to_f).round(2)
+          season_summary[season][game_type][:average_goals_scored] = (counts[:goals_scored] / counts[:games].to_f).round(2)
+          season_summary[season][game_type][:average_goals_against] = (counts[:goals_against] / counts[:games].to_f).round(2)
+        else
+          season_summary[season][game_type][:win_percentage] = 0
+          season_summary[season][game_type][:average_goals_scored] = 0
+          season_summary[season][game_type][:average_goals_against] = 0
+        end
       end
     end
-
     season_summary
   end
+
 end

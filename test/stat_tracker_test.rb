@@ -13,11 +13,6 @@ class StatTrackerTest < Minitest::Test
       teams: './data/dummy_teams.csv',
       game_teams: './data/dummy_game_teams.csv'
     }
-    # @locations = {
-    #   games: './data/games.csv',
-    #   teams: './data/teams.csv',
-    #   game_teams: './data/game_teams.csv'
-    # }
 
     @stat_tracker = StatTracker.from_csv(@locations)
   end
@@ -143,12 +138,8 @@ class StatTrackerTest < Minitest::Test
   end
 
   def test_worst_fans
-    expected = ["Atlanta United", "New England Revolution", "Vancouver Whitecaps FC"]
-    assert_equal expected, @stat_tracker.worst_fans.sort
-    # assert_equal 3, @stat_tracker.worst_fans.length
-    # assert_equal true, @stat_tracker.worst_fans.include?("New England Revolution")
-    # assert_equal true, @stat_tracker.worst_fans.include?("Vancouver Whitecaps FC")
-    # assert_equal true, @stat_tracker.worst_fans.include?("Atlanta United")
+    expected = ["New England Revolution", "Vancouver Whitecaps FC", "Atlanta United"]
+    assert_equal expected, @stat_tracker.worst_fans
   end
 
 
@@ -168,10 +159,12 @@ class StatTrackerTest < Minitest::Test
 
   def test_best_season
     assert_equal "20132014", @stat_tracker.best_season("3")
+    assert_equal "20152016", @stat_tracker.best_season("21")
   end
 
   def test_worst_season
     assert_equal "20122013", @stat_tracker.worst_season("3")
+    assert_equal "20142015", @stat_tracker.worst_season("21")
   end
 
   def test_average_win_percentage
@@ -220,17 +213,31 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
         :postseason=>{:total_goals_scored=>8, :total_goals_against=>5, :win_percentage=>1.0, :average_goals_scored=>2.67, :average_goals_against=>1.67},
         :regular_season=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0}
       },
-      "20142015"=>{
-        :postseason=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0},
-        :regular_season=>{:total_goals_scored=>2, :total_goals_against=>2, :win_percentage=>0.0, :average_goals_scored=>2.0, :average_goals_against=>2.0}
-      },
       "20132014"=>{
-        :postseason=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0},
-        :regular_season=>{:total_goals_scored=>2, :total_goals_against=>2, :win_percentage=>0.0, :average_goals_scored=>2.0, :average_goals_against=>2.0}
+        :regular_season=>{:total_goals_scored=>2, :total_goals_against=>2, :win_percentage=>0.0, :average_goals_scored=>2.0, :average_goals_against=>2.0},
+        :postseason=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0}
+      },
+      "20142015"=>{
+        :regular_season=>{:total_goals_scored=>2, :total_goals_against=>2, :win_percentage=>0.0, :average_goals_scored=>2.0, :average_goals_against=>2.0},
+        :postseason=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0}
+      },
+      "20152016"=>{
+        :regular_season=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0},
+        :postseason=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0}
+      },
+      "20162017"=>{
+        :regular_season=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0},
+        :postseason=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0}
+      },
+      "20172018"=>{
+        :regular_season=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0},
+        :postseason=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0}
       }
     }
     assert_equal expected, @stat_tracker.seasonal_summary("6")
   end
+
+
 
 ##### Season Statistics Tests #####
 
@@ -265,6 +272,8 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
   def test_fewest_tackles
     assert_equal "Seattle Sounders FC", @stat_tracker.fewest_tackles("20132014")
   end
+
+
 
 ##### Helper Method Tests #####
 
@@ -337,20 +346,28 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
   def test_team_stats_by_season
     expected = {
       "20122013"=>{
-        :post_games=>3,
-        :post_wins=>3,
-        :post_goals_scored=>8,
-        :post_goals_against=>5
-      },
-      "20142015"=>{
-        :reg_games=>1,
-        :reg_goals_scored=>2,
-        :reg_goals_against=>2
+        :postseason=>{:games=>3, :wins=>3, :goals_scored=>8, :goals_against=>5},
+        :regular_season=>{}
       },
       "20132014"=>{
-        :reg_games=>1,
-        :reg_goals_scored=>2,
-        :reg_goals_against=>2
+        :regular_season=>{:games=>1, :goals_scored=>2, :goals_against=>2},
+        :postseason=>{}
+      },
+      "20142015"=>{
+        :regular_season=>{:games=>1, :goals_scored=>2, :goals_against=>2},
+        :postseason=>{}
+      },
+      "20152016"=>{
+        :regular_season=>{},
+        :postseason=>{}
+      },
+      "20162017"=>{
+        :regular_season=>{},
+        :postseason=>{}
+      },
+      "20172018"=>{
+        :regular_season=>{},
+        :postseason=>{}
       }
     }
     assert_equal expected, @stat_tracker.team_stats_by_season("6")
@@ -477,4 +494,21 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
     }
     assert_equal expected, @stat_tracker.team_tack_shots
   end
+
+  def test_season_counts
+    expected = {
+      "24"=>{:postseason=>{:games=>2, :wins=>2}},
+      "20"=>{:postseason=>{:games=>2}},
+      "30"=>{:regular_season=>{:games=>1, :wins=>1}},
+      "13"=>{:regular_season=>{:games=>1}},
+      "10"=>{:regular_season=>{:games=>1}},
+      "28"=>{:regular_season=>{:games=>1}},
+      "2"=>{:regular_season=>{:games=>1}}, 
+      "29"=>{:regular_season=>{:games=>1}},
+      "4"=>{:regular_season=>{:games=>1, :wins=>1}},
+      "12"=>{:regular_season=>{:games=>1}}
+    }
+    assert_equal expected, @stat_tracker.season_counts("20162017")
+  end
+
 end

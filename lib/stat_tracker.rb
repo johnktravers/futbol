@@ -1,7 +1,8 @@
 require_relative './team'
 require_relative './game'
 require_relative './game_team'
-require_relative './modules/helper_methods'
+require_relative './modules/query_helper_methods'
+require_relative './modules/command_helper_methods'
 require_relative './modules/game_stats'
 require_relative './modules/league_stats'
 require_relative './modules/team_stats'
@@ -13,7 +14,8 @@ class StatTracker
   include GameStats
   include LeagueStats
   include TeamStats
-  include HelperMethods
+  include CommandHelperMethods
+  include QueryHelperMethods
   include SeasonStats
 
   attr_reader :teams, :games, :game_teams

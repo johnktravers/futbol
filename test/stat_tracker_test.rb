@@ -3,6 +3,7 @@ SimpleCov.start
 
 require 'minitest/autorun'
 require 'minitest/pride'
+require 'mocha/minitest'
 require './lib/stat_tracker'
 
 class StatTrackerTest < Minitest::Test
@@ -245,9 +246,9 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
     assert_equal "Seattle Sounders FC", @stat_tracker.biggest_bust("20122013")
   end
 
-  # def test_biggest_surprise
-  #   assert_equal [], @stat_tracker.biggest_surprise("20142015")
-  # end
+  def test_biggest_surprise
+    assert_equal "Philadelphia Union", @stat_tracker.biggest_surprise("20142015")
+  end
 
   def test_winningest_coach
     assert_equal "Adam Oates", @stat_tracker.winningest_coach("20142015")
@@ -503,12 +504,26 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
       "13"=>{:regular_season=>{:games=>1}},
       "10"=>{:regular_season=>{:games=>1}},
       "28"=>{:regular_season=>{:games=>1}},
-      "2"=>{:regular_season=>{:games=>1}}, 
+      "2"=>{:regular_season=>{:games=>1}},
       "29"=>{:regular_season=>{:games=>1}},
       "4"=>{:regular_season=>{:games=>1, :wins=>1}},
       "12"=>{:regular_season=>{:games=>1}}
     }
     assert_equal expected, @stat_tracker.season_counts("20162017")
+  end
+
+  def test_post_and_reg_percents
+    expected = {
+      "19"=>{:reg_percent=>0, :post_percent=>0.5},
+      "30"=>{:reg_percent=>0, :post_percent=>0.5},
+      "21"=>{:reg_percent=>0.0, :post_percent=>0},
+      "6"=>{:reg_percent=>0.0, :post_percent=>0},
+      "29"=>{:reg_percent=>0.0, :post_percent=>0},
+      "1"=>{:reg_percent=>1.0, :post_percent=>0},
+      "16"=>{:reg_percent=>1.0, :post_percent=>0},
+      "10"=>{:reg_percent=>0.0, :post_percent=>0}
+    }
+    assert_equal expected, @stat_tracker.post_and_reg_percents("20142015")
   end
 
 end

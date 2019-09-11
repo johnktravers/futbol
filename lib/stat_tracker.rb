@@ -17,8 +17,6 @@ class StatTracker
   include CommandHelperMethods
   include QueryHelperMethods
   include SeasonStats
-  include ERB::Util
-
 
   attr_reader :teams, :games, :game_teams
 

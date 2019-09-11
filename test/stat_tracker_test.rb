@@ -13,6 +13,11 @@ class StatTrackerTest < Minitest::Test
       teams: './data/dummy_teams.csv',
       game_teams: './data/dummy_game_teams.csv'
     }
+    # @locations = {
+    #   games: './data/games.csv',
+    #   teams: './data/teams.csv',
+    #   game_teams: './data/game_teams.csv'
+    # }
 
     @stat_tracker = StatTracker.from_csv(@locations)
   end
@@ -227,7 +232,23 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
     assert_equal expected, @stat_tracker.seasonal_summary("6")
   end
 
+##### Season Statistics Tests #####
 
+  def test_biggest_bust
+    assert_equal [], @stat_tracker.biggest_bust("20122013")
+  end
+
+  # def test_biggest_surprise
+  #   assert_equal [], @stat_tracker.biggest_surprise("20122013")
+  # end
+
+  def test_winningest_coach
+    assert_equal "Adam Oates", @stat_tracker.winningest_coach("20142015")
+  end
+
+  def test_worst_coach
+    assert_equal "Claude Julien", @stat_tracker.worst_coach("20142015")
+  end
 
 ##### Helper Method Tests #####
 
@@ -317,6 +338,88 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
       }
     }
     assert_equal expected, @stat_tracker.team_stats_by_season("6")
+  end
+
+  def test_coach_win_count
+    expected = {
+      "20122013"=>{
+        "John Tortorella"=>{:games=>2},
+        "Claude Julien"=>{:games=>3, :wins=>3},
+        "Kevin Dineen"=>{:games=>1},
+        "Jack Capuano"=>{:games=>1, :wins=>1},
+        "Ken Hitchcock"=>{:games=>1},
+        "Todd McLellan"=>{:games=>1, :wins=>1},
+        "Randy Carlyle"=>{:games=>1},
+        "Todd Richards"=>{:games=>1},
+        "Dave Tippett"=>{:games=>1},
+        "Bruce Boudreau"=>{:games=>1, :wins=>1},
+        "Bob Hartley"=>{:games=>1}},
+       "20132014"=>{
+        "Joel Quenneville"=>{:games=>2, :wins=>2},
+        "Ken Hitchcock"=>{:games=>2},
+        "Dave Tippett"=>{:games=>1},
+        "Jack Capuano"=>{:games=>1, :wins=>1},
+        "Dallas Eakins"=>{:games=>2, :wins=>1},
+        "Kevin Dineen"=>{:games=>1, :wins=>1},
+        "Craig Berube"=>{:games=>1},
+        "Alain Vigneault"=>{:games=>1, :wins=>1},
+        "Peter Horachek"=>{:games=>1},
+        "Claude Julien"=>{:games=>1},
+        "Peter DeBoer"=>{:games=>1}},
+      "20142015"=>{
+        "Mike Yeo"=>{:games=>2, :wins=>1},
+        "Ken Hitchcock"=>{:games=>2, :wins=>1},
+        "Claude Julien"=>{:games=>1},
+        "Patrick Roy"=>{:games=>1},
+        "Adam Oates"=>{:games=>1, :wins=>1},
+        "Todd Richards"=>{:games=>1},
+        "Randy Carlyle"=>{:games=>1},
+        "Joel Quenneville"=>{:games=>1, :wins=>1}},
+      "20152016"=>{
+        "Dave Hakstol"=>{:games=>3},
+        "Barry Trotz"=>{:games=>2, :wins=>2},
+        "Patrick Roy"=>{:games=>1, :wins=>1},
+        "Paul Maurice"=>{:games=>2},
+        "Bill Peters"=>{:games=>1, :wins=>1},
+        "Bruce Boudreau"=>{:games=>1, :wins=>1}},
+      "20162017"=>{
+        "Glen Gulutzan"=>{:games=>2},
+        "Randy Carlyle"=>{:games=>2, :wins=>2},
+        "Tom Rowe"=>{:games=>1},
+        "Bruce Boudreau"=>{:games=>1, :wins=>1},
+        "Peter DeBoer"=>{:games=>1},
+        "Mike Babcock"=>{:games=>1},
+        "John Tortorella"=>{:games=>1},
+        "Doug Weight"=>{:games=>1},
+        "Bill Peters"=>{:games=>1},
+        "Dave Hakstol"=>{:games=>1, :wins=>1}},
+      "20172018"=>{
+        "Doug Weight"=>{:games=>1},
+        "Bruce Boudreau"=>{:games=>1, :wins=>1}
+      }
+    }
+    assert_equal expected, @stat_tracker.coach_win_count
+  end
+
+  # def test_season_games
+  #   assert_equal [], @stat_tracker.season_games("20122013")
+  # end
+
+  def test_season_counts
+    expected = {
+      "6"=>{:post_games=>3, :post_wins=>3},
+      "3"=>{:post_games=>2},
+      "2"=>{:reg_games=>1, :reg_wins=>1},
+      "13"=>{:reg_games=>1},
+      "28"=>{:reg_games=>1, :reg_wins=>1},
+      "19"=>{:reg_games=>1},
+      "10"=>{:post_games=>1},
+      "27"=>{:reg_games=>1},
+      "29"=>{:reg_games=>1},
+      "20"=>{:reg_games=>1, :reg_wins=>1},
+      "24"=>{:reg_games=>1}
+      }
+    assert_equal expected, @stat_tracker.season_counts("20122013")
   end
 
 end

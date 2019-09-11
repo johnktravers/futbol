@@ -2,8 +2,6 @@ module LeagueStats
 
   def count_of_teams
     @teams.length
-    #works fine but when we refactor we should consider doing this with uniq so that
-    #if there are repetitive teams it still works.
   end
 
   def best_offense

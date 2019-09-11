@@ -181,17 +181,19 @@ class StatTrackerTest < Minitest::Test
   end
 
   def test_favorite_opponent
-    assert_equal "FC Dallas", @stat_tracker.favorite_opponent("21")
-    assert_equal "Orlando Pride", @stat_tracker.favorite_opponent("27")
+    stub_opponent_stats
+
+    assert_equal "Houston Dash", @stat_tracker.favorite_opponent("21")
   end
 
   def test_rival
-    assert_equal "Orlando City SC", @stat_tracker.rival("2")
-    assert_equal "Vancouver Whitecaps FC", @stat_tracker.rival("52")
+    stub_opponent_stats
+
+    assert_equal "Orlando Pride", @stat_tracker.rival("2")
   end
 
   def test_biggest_team_blowout
-assert_equal 1, @stat_tracker.biggest_team_blowout("3")
+    assert_equal 1, @stat_tracker.biggest_team_blowout("3")
   end
 
   def test_worst_loss
@@ -209,6 +211,8 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
   end
 
   def test_seasonal_summary
+    stub_team_stats_by_season
+
     expected = {
       "20122013"=>{
         :postseason=>{:total_goals_scored=>8, :total_goals_against=>5, :win_percentage=>1.0, :average_goals_scored=>2.67, :average_goals_against=>1.67},
@@ -220,18 +224,6 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
       },
       "20142015"=>{
         :regular_season=>{:total_goals_scored=>2, :total_goals_against=>2, :win_percentage=>0.0, :average_goals_scored=>2.0, :average_goals_against=>2.0},
-        :postseason=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0}
-      },
-      "20152016"=>{
-        :regular_season=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0},
-        :postseason=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0}
-      },
-      "20162017"=>{
-        :regular_season=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0},
-        :postseason=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0}
-      },
-      "20172018"=>{
-        :regular_season=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0},
         :postseason=>{:total_goals_scored=>0, :total_goals_against=>0, :win_percentage=>0, :average_goals_scored=>0, :average_goals_against=>0}
       }
     }
@@ -526,4 +518,32 @@ assert_equal 1, @stat_tracker.biggest_team_blowout("3")
     assert_equal expected, @stat_tracker.post_and_reg_percents("20142015")
   end
 
+  ###### Test Helper Methods #####
+  def stub_opponent_stats
+    output = {
+      "13"=>{:games=>4, :wins=>1, :losses=>3},
+      "27"=>{:games=>4, :wins=>2, :losses=>2},
+      "30"=>{:games=>4, :wins=>3, :losses=>1},
+      "29"=>{:games=>4, :wins=>4, :losses=>0}
+    }
+    @stat_tracker.expects(:opponent_stats).returns(output)
+  end
+
+  def stub_team_stats_by_season
+    output = {
+      "20122013"=>{
+        :postseason=>{:games=>3, :wins=>3, :goals_scored=>8, :goals_against=>5},
+        :regular_season=>{:games=>0, :wins=>0, :goals_scored=>0, :goals_against=>0}
+      },
+      "20132014"=>{
+        :regular_season=>{:games=>1, :wins=>0, :goals_scored=>2, :goals_against=>2},
+        :postseason=>{:games=>0, :wins=>0, :goals_scored=>0, :goals_against=>0}
+      },
+      "20142015"=>{
+        :regular_season=>{:games=>1, :wins=>0, :goals_scored=>2, :goals_against=>2},
+        :postseason=>{:games=>0, :wins=>0, :goals_scored=>0, :goals_against=>0}
+      }
+    }
+    @stat_tracker.expects(:team_stats_by_season).returns(output)
+  end
 end

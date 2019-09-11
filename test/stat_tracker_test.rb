@@ -9,10 +9,15 @@ class StatTrackerTest < Minitest::Test
 
   def setup
     @locations = {
-      games: './data/games.csv',
-      teams: './data/teams.csv',
-      game_teams: './data/game_teams.csv'
+      games: './data/dummy_games.csv',
+      teams: './data/dummy_teams.csv',
+      game_teams: './data/dummy_game_teams.csv'
     }
+    # @locations = {
+    #   games: './data/games.csv',
+    #   teams: './data/teams.csv',
+    #   game_teams: './data/game_teams.csv'
+    # }
 
     @stat_tracker = StatTracker.from_csv(@locations)
   end
@@ -193,6 +198,14 @@ class StatTrackerTest < Minitest::Test
     assert_equal "Vancouver Whitecaps FC", @stat_tracker.rival("52")
   end
 
+  def test_biggest_team_blowout
+assert_equal 1, @stat_tracker.biggest_team_blowout("3")
+  end
+
+  def test_worst_loss
+    assert_equal 1, @stat_tracker.worst_loss("3")
+  end
+
   def test_head_to_head
     expected = {
       "Houston Dynamo" => 1.0,
@@ -223,12 +236,36 @@ class StatTrackerTest < Minitest::Test
 
 ##### Season Statistics Tests #####
 
+  def test_biggest_bust
+    assert_equal "Seattle Sounders FC", @stat_tracker.biggest_bust("20122013")
+  end
+
+  # def test_biggest_surprise
+  #   assert_equal [], @stat_tracker.biggest_surprise("20142015")
+  # end
+
   def test_winningest_coach
     assert_equal "Adam Oates", @stat_tracker.winningest_coach("20142015")
   end
 
   def test_worst_coach
     assert_equal "Claude Julien", @stat_tracker.worst_coach("20142015")
+  end
+
+  def test_most_accurate_team
+    assert_equal "Atlanta United", @stat_tracker.most_accurate_team("20142015")
+  end
+
+  def test_least_accurate_team
+    assert_equal "San Jose Earthquakes", @stat_tracker.least_accurate_team("20132014")
+  end
+
+  def test_most_tackles
+    assert_equal "Philadelphia Union", @stat_tracker.most_tackles("20132014")
+  end
+
+  def test_fewest_tackles
+    assert_equal "Seattle Sounders FC", @stat_tracker.fewest_tackles("20132014")
   end
 
 ##### Helper Method Tests #####
@@ -248,9 +285,19 @@ class StatTrackerTest < Minitest::Test
     assert_equal false, @stat_tracker.home_win?("4", @stat_tracker.games["2015020797"])
   end
 
+  def test_home_loss?
+    assert_equal false, @stat_tracker.home_loss?("4", @stat_tracker.games["2016020070"])
+    assert_equal true, @stat_tracker.home_loss?("4", @stat_tracker.games["2015020797"])
+  end
+
   def test_away_win?
     assert_equal true, @stat_tracker.away_win?("21", @stat_tracker.games["2015020314"])
     assert_equal false, @stat_tracker.away_win?("13", @stat_tracker.games["2013020333"])
+  end
+
+  def test_away_loss?
+    assert_equal false, @stat_tracker.away_loss?("21", @stat_tracker.games["2015020314"])
+    assert_equal true, @stat_tracker.away_loss?("13", @stat_tracker.games["2013020333"])
   end
 
   def test_team_result_count
@@ -312,23 +359,124 @@ class StatTrackerTest < Minitest::Test
   end
 
   def test_coach_win_count
-    expected = {"20122013"=>{"John Tortorella"=>{:games=>2}, "Claude Julien"=>{:games=>3, :wins=>3}, "Kevin Dineen"=>{:games=>1}, "Jack Capuano"=>{:games=>1, :wins=>1}, "Ken Hitchcock"=>{:games=>1}, "Todd McLellan"=>{:games=>1, :wins=>1}, "Randy Carlyle"=>{:games=>1}, "Todd Richards"=>{:games=>1}, "Dave Tippett"=>{:games=>1}, "Bruce Boudreau"=>{:games=>1, :wins=>1}, "Bob Hartley"=>{:games=>1}}, "20132014"=>{"Joel Quenneville"=>{:games=>2, :wins=>2}, "Ken Hitchcock"=>{:games=>2}, "Dave Tippett"=>{:games=>1}, "Jack Capuano"=>{:games=>1, :wins=>1}, "Dallas Eakins"=>{:games=>2, :wins=>1}, "Kevin Dineen"=>{:games=>1, :wins=>1}, "Craig Berube"=>{:games=>1}, "Alain Vigneault"=>{:games=>1, :wins=>1}, "Peter Horachek"=>{:games=>1}, "Claude Julien"=>{:games=>1}, "Peter DeBoer"=>{:games=>1}}, "20142015"=>{"Mike Yeo"=>{:games=>2, :wins=>1}, "Ken Hitchcock"=>{:games=>2, :wins=>1}, "Claude Julien"=>{:games=>1}, "Patrick Roy"=>{:games=>1}, "Adam Oates"=>{:games=>1, :wins=>1}, "Todd Richards"=>{:games=>1}, "Randy Carlyle"=>{:games=>1}, "Joel Quenneville"=>{:games=>1, :wins=>1}}, "20152016"=>{"Dave Hakstol"=>{:games=>3}, "Barry Trotz"=>{:games=>2, :wins=>2}, "Patrick Roy"=>{:games=>1, :wins=>1}, "Paul Maurice"=>{:games=>2}, "Bill Peters"=>{:games=>1, :wins=>1}, "Bruce Boudreau"=>{:games=>1, :wins=>1}}, "20162017"=>{"Glen Gulutzan"=>{:games=>2}, "Randy Carlyle"=>{:games=>2, :wins=>2}, "Tom Rowe"=>{:games=>1}, "Bruce Boudreau"=>{:games=>1, :wins=>1}, "Peter DeBoer"=>{:games=>1}, "Mike Babcock"=>{:games=>1}, "John Tortorella"=>{:games=>1}, "Doug Weight"=>{:games=>1}, "Bill Peters"=>{:games=>1}, "Dave Hakstol"=>{:games=>1, :wins=>1}}, "20172018"=>{"Doug Weight"=>{:games=>1}, "Bruce Boudreau"=>{:games=>1, :wins=>1}}}
+    expected = {
+      "20122013"=>{
+        "John Tortorella"=>{:games=>2},
+        "Claude Julien"=>{:games=>3, :wins=>3},
+        "Kevin Dineen"=>{:games=>1},
+        "Jack Capuano"=>{:games=>1, :wins=>1},
+        "Ken Hitchcock"=>{:games=>1},
+        "Todd McLellan"=>{:games=>1, :wins=>1},
+        "Randy Carlyle"=>{:games=>1},
+        "Todd Richards"=>{:games=>1},
+        "Dave Tippett"=>{:games=>1},
+        "Bruce Boudreau"=>{:games=>1, :wins=>1},
+        "Bob Hartley"=>{:games=>1}},
+       "20132014"=>{
+        "Joel Quenneville"=>{:games=>2, :wins=>2},
+        "Ken Hitchcock"=>{:games=>2},
+        "Dave Tippett"=>{:games=>1},
+        "Jack Capuano"=>{:games=>1, :wins=>1},
+        "Dallas Eakins"=>{:games=>2, :wins=>1},
+        "Kevin Dineen"=>{:games=>1, :wins=>1},
+        "Craig Berube"=>{:games=>1},
+        "Alain Vigneault"=>{:games=>1, :wins=>1},
+        "Peter Horachek"=>{:games=>1},
+        "Claude Julien"=>{:games=>1},
+        "Peter DeBoer"=>{:games=>1}},
+      "20142015"=>{
+        "Mike Yeo"=>{:games=>2, :wins=>1},
+        "Ken Hitchcock"=>{:games=>2, :wins=>1},
+        "Claude Julien"=>{:games=>1},
+        "Patrick Roy"=>{:games=>1},
+        "Adam Oates"=>{:games=>1, :wins=>1},
+        "Todd Richards"=>{:games=>1},
+        "Randy Carlyle"=>{:games=>1},
+        "Joel Quenneville"=>{:games=>1, :wins=>1}},
+      "20152016"=>{
+        "Dave Hakstol"=>{:games=>3},
+        "Barry Trotz"=>{:games=>2, :wins=>2},
+        "Patrick Roy"=>{:games=>1, :wins=>1},
+        "Paul Maurice"=>{:games=>2},
+        "Bill Peters"=>{:games=>1, :wins=>1},
+        "Bruce Boudreau"=>{:games=>1, :wins=>1}},
+      "20162017"=>{
+        "Glen Gulutzan"=>{:games=>2},
+        "Randy Carlyle"=>{:games=>2, :wins=>2},
+        "Tom Rowe"=>{:games=>1},
+        "Bruce Boudreau"=>{:games=>1, :wins=>1},
+        "Peter DeBoer"=>{:games=>1},
+        "Mike Babcock"=>{:games=>1},
+        "John Tortorella"=>{:games=>1},
+        "Doug Weight"=>{:games=>1},
+        "Bill Peters"=>{:games=>1},
+        "Dave Hakstol"=>{:games=>1, :wins=>1}},
+      "20172018"=>{
+        "Doug Weight"=>{:games=>1},
+        "Bruce Boudreau"=>{:games=>1, :wins=>1}
+      }
+    }
     assert_equal expected, @stat_tracker.coach_win_count
   end
 
-end
 
-{"20122013"=>{"John Tortorella"=>{:games=>60, :wins=>22}, "Claude Julien"=>{:games=>69, :wins=>38}, "Dan Bylsma"=>{:games=>63, :wins=>33}, "Mike Babcock"=>{:games=>62, :wins=>29}, "Joel Quenneville"=>{:games=>71, :wins=>38}, "Paul MacLean"=>{:games=>58, :wins=>21}, "Michel Therrien"=>{:games=>53, :wins=>22}, "Mike Yeo"=>{:games=>53, :wins=>14}, "Darryl Sutter"=>{:games=>66, :wins=>30}, "Ken Hitchcock"=>{:games=>54, :wins=>22}, "Bruce Boudreau"=>{:games=>55, :wins=>24}, "Jack Capuano"=>{:games=>54, :wins=>17}, "Adam Oates"=>{:games=>55, :wins=>22}, "Todd Richards"=>{:games=>48, :wins=>17}, "Kirk Muller"=>{:games=>48, :wins=>18}, "Peter DeBoer"=>{:games=>48, :wins=>16}, "Dave Tippett"=>{:games=>48, :wins=>16}, "Ron Rolston"=>{:games=>31, :wins=>9}, "Bob Hartley"=>{:games=>48, :wins=>17}, "Joe Sacco"=>{:games=>48, :wins=>14}, "Ralph Krueger"=>{:games=>48, :wins=>18}, "Randy Carlyle"=>{:games=>55, :wins=>24}, "Kevin Dineen"=>{:games=>48, :wins=>12}, "Todd McLellan"=>{:games=>59, :wins=>22}, "Barry Trotz"=>{:games=>48, :wins=>12}, "Lindy Ruff"=>{:games=>17, :wins=>8}, "Claude Noel"=>{:games=>48, :wins=>17}, "Peter Laviolette"=>{:games=>48, :wins=>15}, "Glen Gulutzan"=>{:games=>48, :wins=>21}, "Alain Vigneault"=>{:games=>52, :wins=>23}, "Guy Boucher"=>{:games=>31, :wins=>15}, "Jon Cooper"=>{:games=>15, :wins=>3}, "Martin Raymond"=>{:games=>1}, "Dan Lacroix"=>{:games=>1, :wins=>1}}, "20162017"=>{"Glen Gulutzan"=>{:games=>86, :wins=>38}, "Randy Carlyle"=>{:games=>99, :wins=>45}, "Peter Laviolette"=>{:games=>104, :wins=>44}, "Mike Yeo"=>{:games=>43, :wins=>22}, "Mike Babcock"=>{:games=>88, :wins=>28}, "Barry Trotz"=>{:games=>95, :wins=>50}, "John Tortorella"=>{:games=>87, :wins=>45}, "Mike Sullivan"=>{:games=>107, :wins=>53}, "Bruce Boudreau"=>{:games=>87, :wins=>43}, "Dave Hakstol"=>{:games=>82, :wins=>24}, "Joel Quenneville"=>{:games=>86, :wins=>33}, "Michel Therrien"=>{:games=>58, :wins=>31}, "Jack Capuano"=>{:games=>42, :wins=>12}, "Darryl Sutter"=>{:games=>82, :wins=>32}, "Paul Maurice"=>{:games=>82, :wins=>35}, "Dave Tippett"=>{:games=>82, :wins=>18}, "John Hynes"=>{:games=>82, :wins=>26}, "Doug Weight"=>{:games=>40, :wins=>17}, "Peter DeBoer"=>{:games=>88, :wins=>41}, "Guy Boucher"=>{:games=>101, :wins=>41}, "Jared Bednar"=>{:games=>82, :wins=>20}, "Bill Peters"=>{:games=>82, :wins=>32}, "Lindy Ruff"=>{:games=>82, :wins=>33}, "Claude Julien"=>{:games=>85, :wins=>38}, "Jeff Blashill"=>{:games=>82, :wins=>26}, "Willie Desjardins"=>{:games=>82, :wins=>25}, "Tom Rowe"=>{:games=>60, :wins=>23}, "Ken Hitchcock"=>{:games=>50, :wins=>21}, "Todd McLellan"=>{:games=>95, :wins=>47}, "Jon Cooper"=>{:games=>82, :wins=>33}, "Alain Vigneault"=>{:games=>94, :wins=>44}, "Bruce Cassidy"=>{:games=>33, :wins=>21}, "Dan Bylsma"=>{:games=>82, :wins=>30}, "Gerard Gallant"=>{:games=>22, :wins=>7}},
-"20142015"=>{
-  "Joel Quenneville"=>{:games=>105, :wins=>44},
-  "Jon Cooper"=>{:games=>108, :wins=>45},
-  "Mike Johnston"=>{:games=>87, :wins=>37},
-  "Alain Vigneault"=>{:games=>101, :wins=>52},
-  "Mike Yeo"=>{:games=>92, :wins=>42},
-  "Ken Hitchcock"=>{:games=>88, :wins=>38},
-  "Dave Cameron"=>{:games=>61, :wins=>26},
-  "Michel Therrien"=>{:games=>94, :wins=>46},
-  "Barry Trotz"=>{:games=>96, :wins=>49},
-  "Jack Capuano"=>{:games=>89, :wins=>40},
-  "Paul Maurice"=>{:games=>86, :wins=>36},
-  "Bruce Boudreau"=>{:games=>98, :wins=>48}, "Darryl Sutter"=>{:games=>82, :wins=>33}, "Todd Richards"=>{:games=>82, :wins=>26}, "Bill Peters"=>{:games=>82, :wins=>25}, "Dave Tippett"=>{:games=>82, :wins=>19}, "Dallas Eakins"=>{:games=>31, :wins=>9}, "Todd McLellan"=>{:games=>82, :wins=>31}, "Patrick Roy"=>{:games=>82, :wins=>29}, "Claude Julien"=>{:games=>82, :wins=>31}, "Craig Berube"=>{:games=>82, :wins=>27}, "Lindy Ruff"=>{:games=>82, :wins=>29}, "Gerard Gallant"=>{:games=>82, :wins=>24}, "Peter Horachek"=>{:games=>42, :wins=>9}, "Todd Nelson"=>{:games=>46, :wins=>10}, "Mike Babcock"=>{:games=>89, :wins=>37}, "Ted Nolan"=>{:games=>82, :wins=>15}, "Bob Hartley"=>{:games=>93, :wins=>35}, "Adam Oates"=>{:games=>46, :wins=>16}, "Willie Desjardins"=>{:games=>88, :wins=>42}, "Peter Laviolette"=>{:games=>88, :wins=>45}, "Peter DeBoer"=>{:games=>36, :wins=>12}, "Randy Carlyle"=>{:games=>40, :wins=>18}, "Paul MacLean"=>{:games=>27, :wins=>8}, "Craig MacTavish"=>{:games=>5, :wins=>1}}, "20152016"=>{"Alain Vigneault"=>{:games=>87, :wins=>39}, "Mike Sullivan"=>{:games=>78, :wins=>41}, "Peter DeBoer"=>{:games=>106, :wins=>52}, "Darryl Sutter"=>{:games=>87, :wins=>43}, "Dave Hakstol"=>{:games=>88, :wins=>29}, "Barry Trotz"=>{:games=>94, :wins=>53}, "John Torchetti"=>{:games=>33, :wins=>12}, "Lindy Ruff"=>{:games=>95, :wins=>39}, "Jack Capuano"=>{:games=>93, :wins=>35}, "Gerard Gallant"=>{:games=>88, :wins=>40}, "Joel Quenneville"=>{:games=>89, :wins=>43}, "Ken Hitchcock"=>{:games=>102, :wins=>48}, "Jon Cooper"=>{:games=>99, :wins=>45}, "Patrick Roy"=>{:games=>82, :wins=>35}, "Paul Maurice"=>{:games=>82, :wins=>32}, "Bill Peters"=>{:games=>82, :wins=>33}, "Mike Babcock"=>{:games=>82, :wins=>24}, "Todd McLellan"=>{:games=>82, :wins=>26}, "Mike Johnston"=>{:games=>28, :wins=>9}, "John Hynes"=>{:games=>82, :wins=>32}, "Bruce Boudreau"=>{:games=>89, :wins=>39}, "Peter Laviolette"=>{:games=>96, :wins=>42}, "Bob Hartley"=>{:games=>82, :wins=>29}, "Dan Bylsma"=>{:games=>82, :wins=>32}, "Willie Desjardins"=>{:games=>82, :wins=>23}, "Claude Julien"=>{:games=>81, :wins=>33}, "John Tortorella"=>{:games=>75, :wins=>27}, "Dave Cameron"=>{:games=>82, :wins=>29}, "Dave Tippett"=>{:games=>82, :wins=>29}, "Jeff Blashill"=>{:games=>87, :wins=>33}, "Mike Yeo"=>{:games=>55, :wins=>25}, "Michel Therrien"=>{:games=>82, :wins=>26}, "Todd Richards"=>{:games=>7}}, "20132014"=>{"Joel Quenneville"=>{:games=>101, :wins=>47}, "Ken Hitchcock"=>{:games=>88, :wins=>37}, "Mike Yeo"=>{:games=>95, :wins=>37}, "Patrick Roy"=>{:games=>89, :wins=>36}, "Darryl Sutter"=>{:games=>108, :wins=>53}, "Bruce Boudreau"=>{:games=>95, :wins=>49}, "Lindy Ruff"=>{:games=>88, :wins=>34}, "John Tortorella"=>{:games=>82, :wins=>33}, "Craig Berube"=>{:games=>86, :wins=>34}, "Mike Babcock"=>{:games=>87, :wins=>31}, "Todd Richards"=>{:games=>88, :wins=>38}, "Adam Oates"=>{:games=>82, :wins=>22}, "Bob Hartley"=>{:games=>82, :wins=>24}, "Barry Trotz"=>{:games=>82, :wins=>31}, "Claude Julien"=>{:games=>94, :wins=>54}, "Michel Therrien"=>{:games=>99, :wins=>44}, "Dan Bylsma"=>{:games=>95, :wins=>46}, "Jack Capuano"=>{:games=>82, :wins=>22}, "Claude Noel"=>{:games=>47, :wins=>13}, "Jon Cooper"=>{:games=>86, :wins=>29}, "Kevin Dineen"=>{:games=>16, :wins=>3}, "Todd McLellan"=>{:games=>89, :wins=>41}, "Ted Nolan"=>{:games=>62, :wins=>13}, "Randy Carlyle"=>{:games=>82, :wins=>22}, "Dave Tippett"=>{:games=>82, :wins=>28}, "Peter DeBoer"=>{:games=>82, :wins=>31}, "Peter Horachek"=>{:games=>66, :wins=>15}, "Paul Maurice"=>{:games=>35, :wins=>12}, "Paul MacLean"=>{:games=>82, :wins=>24}, "Dallas Eakins"=>{:games=>82, :wins=>19}, "Alain Vigneault"=>{:games=>107, :wins=>49}, "Kirk Muller"=>{:games=>82, :wins=>31}, "Ron Rolston"=>{:games=>20, :wins=>2}, "Peter Laviolette"=>{:games=>3}}, "20172018"=>{"Peter DeBoer"=>{:games=>92, :wins=>44}, "Gerard Gallant"=>{:games=>102, :wins=>51}, "Randy Carlyle"=>{:games=>86, :wins=>32}, "Barry Trotz"=>{:games=>106, :wins=>48}, "Jon Cooper"=>{:games=>99, :wins=>47}, "John Tortorella"=>{:games=>88, :wins=>37}, "Paul Maurice"=>{:games=>99, :wins=>48}, "Peter Laviolette"=>{:games=>95, :wins=>43}, "John Stevens"=>{:games=>86, :wins=>40}, "Bruce Cassidy"=>{:games=>94, :wins=>50}, "Dave Hakstol"=>{:games=>88, :wins=>31}, "Mike Sullivan"=>{:games=>94, :wins=>48}, "John Hynes"=>{:games=>87, :wins=>33}, "Mike Babcock"=>{:games=>89, :wins=>36}, "Jared Bednar"=>{:games=>88, :wins=>39}, "Bruce Boudreau"=>{:games=>87, :wins=>39}, "Phil Housley"=>{:games=>82, :wins=>20}, "Glen Gulutzan"=>{:games=>82, :wins=>30}, "Travis Green"=>{:games=>82, :wins=>26}, "Ken Hitchcock"=>{:games=>82, :wins=>31}, "Doug Weight"=>{:games=>82, :wins=>30}, "Rick Tocchet"=>{:games=>82, :wins=>28}, "Todd McLellan"=>{:games=>82, :wins=>27}, "Bill Peters"=>{:games=>82, :wins=>35}, "Claude Julien"=>{:games=>82, :wins=>25}, "Bob Boughner"=>{:games=>82, :wins=>38}, "Alain Vigneault"=>{:games=>82, :wins=>24}, "Guy Boucher"=>{:games=>82, :wins=>23}, "Mike Yeo"=>{:games=>82, :wins=>38}, "Joel Quenneville"=>{:games=>82, :wins=>31}, "Jeff Blashill"=>{:games=>82, :wins=>29}}}
+  def test_team_tackles_and_shots
+    expected = {
+      "20122013"=>{
+        "3"=>{:tackles=>77, :shots=>17, :goals=>4},
+        "6"=>{:tackles=>117, :shots=>30, :goals=>8},
+        "13"=>{:tackles=>22, :shots=>7, :goals=>2},
+        "2"=>{:tackles=>15, :shots=>7, :goals=>3},
+        "19"=>{:tackles=>22, :shots=>8, :goals=>2},
+        "28"=>{:tackles=>30, :shots=>6, :goals=>3},
+        "10"=>{:tackles=>37, :shots=>5, :goals=>1},
+        "29"=>{:tackles=>36, :shots=>5, :goals=>3},
+        "27"=>{:tackles=>35, :shots=>8, :goals=>3},
+        "24"=>{:tackles=>17, :shots=>6, :goals=>3},
+        "20"=>{:tackles=>17, :shots=>6, :goals=>2}},
+      "20132014"=>{
+        "16"=>{:tackles=>45, :shots=>17, :goals=>6},
+        "19"=>{:tackles=>68, :shots=>20, :goals=>4},
+        "27"=>{:tackles=>34, :shots=>8, :goals=>1},
+        "2"=>{:tackles=>15, :shots=>7, :goals=>4},
+        "22"=>{:tackles=>62, :shots=>14, :goals=>4},
+        "13"=>{:tackles=>58, :shots=>11, :goals=>4},
+        "4"=>{:tackles=>37, :shots=>3, :goals=>1},
+        "3"=>{:tackles=>32, :shots=>9, :goals=>2},
+        "6"=>{:tackles=>20, :shots=>7, :goals=>2},
+        "1"=>{:tackles=>22, :shots=>6, :goals=>2}},
+      "20142015"=>{
+        "30"=>{:tackles=>64, :shots=>12, :goals=>4},
+        "19"=>{:tackles=>62, :shots=>10, :goals=>2},
+        "6"=>{:tackles=>27, :shots=>6, :goals=>2},
+        "21"=>{:tackles=>26, :shots=>9, :goals=>2},
+        "1"=>{:tackles=>25, :shots=>4, :goals=>2},
+        "29"=>{:tackles=>29, :shots=>8, :goals=>0},
+        "10"=>{:tackles=>34, :shots=>7, :goals=>0},
+        "16"=>{:tackles=>22, :shots=>8, :goals=>2}},
+      "20152016"=>{
+        "4"=>{:tackles=>114, :shots=>25, :goals=>3},
+        "15"=>{:tackles=>64, :shots=>11, :goals=>6},
+        "21"=>{:tackles=>17, :shots=>7, :goals=>2},
+        "52"=>{:tackles=>43, :shots=>10, :goals=>2},
+        "12"=>{:tackles=>16, :shots=>7, :goals=>2},
+        "24"=>{:tackles=>26, :shots=>6, :goals=>2}},
+      "20162017"=>{
+        "20"=>{:tackles=>67, :shots=>17, :goals=>4},
+        "24"=>{:tackles=>68, :shots=>17, :goals=>6},
+        "13"=>{:tackles=>16, :shots=>7, :goals=>1},
+        "30"=>{:tackles=>13, :shots=>5, :goals=>3},
+        "28"=>{:tackles=>23, :shots=>10, :goals=>2},
+        "10"=>{:tackles=>20, :shots=>7, :goals=>2},
+        "29"=>{:tackles=>24, :shots=>5, :goals=>2},
+        "2"=>{:tackles=>23, :shots=>7, :goals=>2},
+        "12"=>{:tackles=>19, :shots=>7, :goals=>3},
+        "4"=>{:tackles=>13, :shots=>6, :goals=>4}},
+      "20172018"=>{
+        "2"=>{:tackles=>10, :shots=>8, :goals=>2},
+        "30"=>{:tackles=>11, :shots=>8, :goals=>4}
+      }
+    }
+    assert_equal expected, @stat_tracker.team_tack_shots
+  end
+end

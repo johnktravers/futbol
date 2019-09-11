@@ -1,12 +1,12 @@
 require_relative './team'
 require_relative './game'
 require_relative './game_team'
-require_relative './helper_methods'
+require_relative './modules/helper_methods'
 #thought you called modules directly, ask on monday
-require_relative './game_stats'
-require_relative './league_stats'
-require_relative './team_stats'
-require_relative './season_stats'
+require_relative './modules/game_stats'
+require_relative './modules/league_stats'
+require_relative './modules/team_stats'
+require_relative './modules/season_stats'
 require 'csv'
 require 'pry'
 
@@ -25,6 +25,8 @@ class StatTracker
     @game_teams = game_teams
     @seasons = count_of_games_by_season.keys
     @team_result_count = team_result_count
+    @coach_win_count = coach_win_count
+    @team_tack_shots = team_tack_shots
   end
 
   def self.from_csv(locations)

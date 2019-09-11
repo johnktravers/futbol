@@ -118,6 +118,7 @@ module HelperMethods
     coach_wins
   end
 
+
   def team_tack_shots
     tack_shots = Hash.new { |h1, k1| h1[k1] = Hash.new { |h2, k2| h2[k2] = Hash.new(0) } }
     @game_teams.each do |game_id, game_teams|
@@ -129,5 +130,39 @@ module HelperMethods
       end
     end
     tack_shots
+  end
+
+
+  def season_games(season_id)
+    @games.values.find_all {|game| game.season == season_id}
+  end
+
+  def season_counts(season_id)
+    season_games = season_games(season_id)
+    season_count = Hash.new{ |h1,k1| h1[k1] = Hash.new(0)}
+    # require 'pry'; binding.pry
+    season_games.each do |game|
+      if game.type == "Postseason"
+        season_count[game.home_team_id][:post_games] += 1
+        season_count[game.away_team_id][:post_games] += 1
+
+        if game.home_goals > game.away_goals
+          season_count[game.home_team_id][:post_wins] += 1
+        elsif game.away_goals > game.home_goals
+          season_count[game.away_team_id][:post_wins] += 1
+        end
+
+      elsif game.type == "Regular Season"
+        season_count[game.home_team_id][:reg_games] += 1
+        season_count[game.away_team_id][:reg_games] += 1
+
+        if game.home_goals > game.away_goals
+          season_count[game.home_team_id][:reg_wins] += 1
+        elsif game.away_goals > game.home_goals
+          season_count[game.away_team_id][:reg_wins] += 1
+        end
+      end
+    end
+    season_count
   end
 end

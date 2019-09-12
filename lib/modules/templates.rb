@@ -234,7 +234,7 @@ module Templates
           <h4>Fewest Tackles:</h4>
           <h5>The team with the lowest amount of tackles in the given season</h5>
           <table>
-          <% @stat_tracker.average_goals_by_season.each do |season, goals| %>
+          <% @stat_tracker.seasons.each do |season| %>
             <tr>
               <td><%= season[0..3] + "-" + season[4..-1] %></td>
               <td><%= @stat_tracker.fewest_tackles(season) %></td>

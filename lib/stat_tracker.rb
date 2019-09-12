@@ -18,7 +18,7 @@ class StatTracker
   include QueryHelperMethods
   include SeasonStats
 
-  attr_reader :teams, :games, :game_teams
+  attr_reader :teams, :games, :game_teams, :seasons
 
   def initialize(teams, games, game_teams)
     @teams = teams

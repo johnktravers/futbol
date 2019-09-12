@@ -144,7 +144,103 @@ module Templates
             <h3><a href="team_stats.html">Team Statistics</a></h3>
             <h3><a href="season_stats.html">Season Statistics</a></h3>
           </ul>
+
           <hr>
+          <h3>Season Statistics</h3>
+          <h4>Biggest Bust:</h4>
+          <h5>The team that suffered the biggest decrease between their regular and post-season records</h5>
+          <table>
+          <% @stat_tracker.average_goals_by_season.each do |season, goals| %>
+            <tr>
+              <td><%= season[0..3] + "-" + season[4..-1] %></td>
+              <td><%= @stat_tracker.biggest_bust(season) %></td>
+            </tr>
+          <% end %>
+          </table>
+
+          <hr>
+          <h4>Biggest Surprise:</h4>
+          <h5>The team that achieved the biggest increase between their regular and post-season records</h5>
+          <table>
+          <% @stat_tracker.average_goals_by_season.each do |season, goals| %>
+            <tr>
+              <td><%= season[0..3] + "-" + season[4..-1] %></td>
+              <td><%= @stat_tracker.biggest_surprise(season) %></td>
+            </tr>
+          <% end %>
+          </table>
+
+          <hr>
+          <h4>Winningest Coach:</h4>
+          <h5>The coach with the most wins in the given season</h5>
+          <table>
+          <% @stat_tracker.average_goals_by_season.each do |season, goals| %>
+            <tr>
+              <td><%= season[0..3] + "-" + season[4..-1] %></td>
+              <td><%= @stat_tracker.winningest_coach(season) %></td>
+            </tr>
+          <% end %>
+          </table>
+
+          <hr>
+          <h4>Worst Coach:</h4>
+          <h5>The coach with the fewest wins in the given season</h5>
+          <table>
+          <% @stat_tracker.average_goals_by_season.each do |season, goals| %>
+            <tr>
+              <td><%= season[0..3] + "-" + season[4..-1] %></td>
+              <td><%= @stat_tracker.worst_coach(season) %></td>
+            </tr>
+          <% end %>
+          </table>
+
+          <hr>
+          <h4>Most Accurate Team:</h4>
+          <h5>The team with the best ratio of shots taken to goals made in the given season</h5>
+          <table>
+          <% @stat_tracker.average_goals_by_season.each do |season, goals| %>
+            <tr>
+              <td><%= season[0..3] + "-" + season[4..-1] %></td>
+              <td><%= @stat_tracker.most_accurate_team(season) %></td>
+            </tr>
+          <% end %>
+          </table>
+
+          <hr>
+          <h4>Least Accurate Team:</h4>
+          <h5>The team with the worst ratio of shots taken to goals made in the given season</h5>
+          <table>
+          <% @stat_tracker.average_goals_by_season.each do |season, goals| %>
+            <tr>
+              <td><%= season[0..3] + "-" + season[4..-1] %></td>
+              <td><%= @stat_tracker.least_accurate_team(season) %></td>
+            </tr>
+          <% end %>
+          </table>
+
+          <hr>
+          <h4>Most Tackles:</h4>
+          <h5>The team with the largest amount of tackles in the given season</h5>
+          <table>
+          <% @stat_tracker.average_goals_by_season.each do |season, goals| %>
+            <tr>
+              <td><%= season[0..3] + "-" + season[4..-1] %></td>
+              <td><%= @stat_tracker.most_tackles(season) %></td>
+            </tr>
+          <% end %>
+          </table>
+
+          <hr>
+          <h4>Fewest Tackles:</h4>
+          <h5>The team with the lowest amount of tackles in the given season</h5>
+          <table>
+          <% @stat_tracker.average_goals_by_season.each do |season, goals| %>
+            <tr>
+              <td><%= season[0..3] + "-" + season[4..-1] %></td>
+              <td><%= @stat_tracker.fewest_tackles(season) %></td>
+            </tr>
+          <% end %>
+          </table>
 
         </body>
       </html>

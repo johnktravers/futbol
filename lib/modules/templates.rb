@@ -49,7 +49,7 @@ module Templates
           </ul>
           <hr>
 
-          <h3>Game Statistics</h3>
+          <h2>Game Statistics</h2>
 
           <h3>Average Goals by Season:</h3>
           <table>
@@ -199,6 +199,135 @@ module Templates
             <h3><a href="season_stats.html">Season Statistics</a></h3>
           </ul>
           <hr>
+
+          <h2>Team Statistics</h2>
+          <p>Please select a team name:</p>
+
+          <select id="team_id">
+            <% @stat_tracker.teams.each do |team_id, team| %>
+              <option value = <%= team_id %>><%= team.team_name %></option>
+            <% end %>
+          </select>
+
+          <br>
+          <br>
+
+          <h3>Team Information</h3>
+          <table>
+            <tr>
+              <td>Team Name</td>
+              <td><%= @stat_tracker.team_info("3")["team_name"] %></td>
+            </tr>
+            <tr>
+              <td>Team ID</td>
+              <td><%= @stat_tracker.team_info("3")["team_id"] %></td>
+            </tr>
+            <tr>
+              <td>Franchise ID</td>
+              <td><%= @stat_tracker.team_info("3")["franchise_id"] %></td>
+            </tr>
+            <tr>
+              <td>Abbreviation</td>
+              <td><%= @stat_tracker.team_info("3")["abbreviation"] %></td>
+            </tr>
+            <tr>
+              <td>Link</td>
+              <td><%= @stat_tracker.team_info("3")["link"] %></td>
+            </tr>
+          </table>
+
+          <br>
+
+          <h3>Team Statistics</h3>
+          <table>
+            <tr>
+              <td>Best Season</td>
+              <td><%= @stat_tracker.best_season("3")[0..3] + "-" + @stat_tracker.best_season("3")[4..7] %></td>
+            </tr>
+            <tr>
+              <td>Worst Season</td>
+              <td><%= @stat_tracker.worst_season("3")[0..3] + "-" + @stat_tracker.worst_season("3")[4..7] %></td>
+            </tr>
+            <tr>
+              <td>Average Win Percentage</td>
+              <td><%= @stat_tracker.average_win_percentage("3") %></td>
+            </tr>
+            <tr>
+              <td>Most Goals Scored</td>
+              <td><%= @stat_tracker.most_goals_scored("3") %></td>
+            </tr>
+            <tr>
+              <td>Fewest Goals Scored</td>
+              <td><%= @stat_tracker.fewest_goals_scored("3") %></td>
+            </tr>
+            <tr>
+              <td>Favorite Opponent</td>
+              <td><%= @stat_tracker.favorite_opponent("3") %></td>
+            </tr>
+            <tr>
+              <td>Rival</td>
+              <td><%= @stat_tracker.rival("3") %></td>
+            </tr>
+            <tr>
+              <td>Biggest Blowout</td>
+              <td><%= @stat_tracker.biggest_team_blowout("3") %></td>
+            </tr>
+            <tr>
+              <td>Worst Loss</td>
+              <td><%= @stat_tracker.worst_loss("3") %></td>
+            </tr>
+          </table>
+
+          <br>
+
+          <h3>Head to Head Summary</h3>
+          <table>
+            <tr>
+              <th>Name of Opponent Team</td>
+              <th>Win Percentage Against Opponent</td>
+            </tr>
+            <% @stat_tracker.head_to_head("3").each do |team_name, win_perc| %>
+              <tr>
+                <td><%= team_name %></td>
+                <td><%= win_perc %></td>
+              </tr>
+            <% end %>
+          </table>
+
+          <br>
+
+          <h3>Seasonal Summary</h3>
+          <table>
+            <tr>
+              <th>Season</th>
+              <th>Game Type</th>
+              <th>Win Percentage</th>
+              <th>Total Goals Scored</th>
+              <th>Total Goals Against</th>
+              <th>Average Goals Scored</th>
+              <th>Average Goals Against</th>
+            </tr>
+            <% @stat_tracker.seasonal_summary("3").each do |season, counts| %>
+              <tr>
+                <td><%= season[0..3] + "-" + season[4..7] %></td>
+                <td>Regular Season</td>
+                <td><%= counts[:regular_season][:win_percentage] %></td>
+                <td><%= counts[:regular_season][:total_goals_scored] %></td>
+                <td><%= counts[:regular_season][:total_goals_against] %></td>
+                <td><%= counts[:regular_season][:average_goals_scored] %></td>
+                <td><%= counts[:regular_season][:average_goals_against] %></td>
+              </tr>
+              <tr>
+                <td><%= season[0..3] + "-" + season[4..7] %></td>
+                <td>Postseason</td>
+                <td><%= counts[:postseason][:win_percentage] %></td>
+                <td><%= counts[:postseason][:total_goals_scored] %></td>
+                <td><%= counts[:postseason][:total_goals_against] %></td>
+                <td><%= counts[:postseason][:average_goals_scored] %></td>
+                <td><%= counts[:postseason][:average_goals_against] %></td>
+              </tr>
+            <% end %>
+          </table>
 
         </body>
       </html>

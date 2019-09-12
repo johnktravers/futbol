@@ -38,9 +38,9 @@ class PageGenerator
 end
 
 locations = {
-  games: './data/dummy_games.csv',
-  teams: './data/dummy_teams.csv',
-  game_teams: './data/dummy_game_teams.csv'
+  games: './data/games.csv',
+  teams: './data/teams.csv',
+  game_teams: './data/game_teams.csv'
 }
 
 page_generator = PageGenerator.new(locations)

@@ -51,6 +51,37 @@ module Templates
 
           <h2>Game Statistics</h2>
 
+          <table>
+            <tr>
+              <td>Highest Total Score</td>
+              <td><%= @stat_tracker.highest_total_score %></td>
+            </tr>
+            <tr>
+              <td>Lowest Total Score</td>
+              <td><%= @stat_tracker.lowest_total_score %></td>
+            </tr>
+            <tr>
+              <td>Biggest Blowout</td>
+              <td><%= @stat_tracker.biggest_blowout %></td>
+            </tr>
+            <tr>
+              <td>Overall Home Win Percentage</td>
+              <td><%= @stat_tracker.percentage_home_wins %></td>
+            </tr>
+            <tr>
+              <td>Overall Visitor Win Percentage</td>
+              <td><%= @stat_tracker.percentage_visitor_wins %></td>
+            </tr>
+            <tr>
+              <td>Overall Tie Percentage</td>
+              <td><%= @stat_tracker.percentage_ties %></td>
+            </tr>
+            <tr>
+              <td>Average Goals per Game</td>
+              <td><%= @stat_tracker.average_goals_per_game %></td>
+            </tr>
+          </table>
+
           <h3>Average Goals by Season:</h3>
           <table>
             <tr>
@@ -65,6 +96,36 @@ module Templates
             <% end %>
           </table>
 
+          <h3>Count of Games by Season:</h3>
+          <table>
+            <tr>
+              <th>Season</th>
+              <th>Number of Games</th>
+            </tr>
+            <% @stat_tracker.count_of_games_by_season.each do |season, games| %>
+              <tr>
+                <td><%= season[0..3] + "-" + season[4..-1] %></td>
+                <td><%= games %></td>
+              </tr>
+            <% end %>
+          </table>
+
+          <br>
+
+          <h4>Highest Total Score</h4>
+          <p>Highest total for home and away goals in a single game</p>
+          <h4>Lowest Total Score</h4>
+          <p>Lowest total for home and away goals in a single game</p>
+          <h4>Biggest Blowout</h4>
+          <p>Largest difference in goals between two teams in a single game</p>
+          <h4>Overall Home Win Percentage</h4>
+          <p>Percentage of games in which the home team won</p>
+          <h4>Overall Visitor Win Percentage</h4>
+          <p>Percentage of games in which the visiting team won</p>
+          <h4>Overall Tie Percentage</h4>
+          <p>Percentage of games which ended in a tie</p>
+          <h4>Average Goals per Game</h4>
+          <p>The average number of total goals scored in a game</p>
         </body>
       </html>
     }

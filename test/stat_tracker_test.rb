@@ -32,6 +32,8 @@ class StatTrackerTest < Minitest::Test
     assert_instance_of GameTeam, @stat_tracker.game_teams["2012030221"][0]
     assert_equal 2, @stat_tracker.game_teams["2012030221"].length
     assert_equal 31, @stat_tracker.game_teams.length
+
+    assert_equal ["20122013", "20132014", "20142015", "20152016", "20162017", "20172018"], @stat_tracker.seasons
   end
 
 
